@@ -20,6 +20,60 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
+const mongoose = require("mongoose");
+
+const playerSchema = new mongoose.Schema({
+    username: String,
+    totalScore: Number,
+    updatedAt: { type: Date, default: Date.now }
+});
+
+const Player = mongoose.model("Player", playerSchema);
+
+app.post("/api/sync", async (req, res) => {
+    const { username, totalScore } = req.body;
+
+    if (!username) return res.status(400).json({ error: "No username" });
+
+    await Player.findOneAndUpdate(
+        { username },
+        { totalScore, updatedAt: new Date() },
+        { upsert: true }
+    );
+
+    res.json({ message: "Synced successfully" });
+});
+// Player Schema
+const playerSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    totalScore: { type: Number, default: 0 },
+    updatedAt: { type: Date, default: Date.now }
+});
+
+const Player = mongoose.model("Player", playerSchema);
+
+// Sync Route
+app.post("/api/sync", async (req, res) => {
+    try {
+        const { username, totalScore } = req.body;
+
+        if (!username) {
+            return res.status(400).json({ error: "Username required" });
+        }
+
+        await Player.findOneAndUpdate(
+            { username },
+            { totalScore, updatedAt: new Date() },
+            { upsert: true, new: true }
+        );
+
+        res.json({ message: "Synced successfully ✅" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
