@@ -51,7 +51,20 @@ app.post("/api/sync", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+// Leaderboard Route
+app.get("/api/leaderboard", async (req, res) => {
+    try {
+        const topPlayers = await Player.find()
+            .sort({ totalScore: -1 }) // highest score first
+            .limit(10);
 
+        res.json(topPlayers);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
