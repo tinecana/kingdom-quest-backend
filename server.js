@@ -10,39 +10,14 @@ app.use(express.json());
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err));
+    .then(() => console.log("MongoDB Connected"))
+    .catch(err => console.log(err));
 
 // Test route
 app.get("/", (req, res) => {
     res.send("Kingdom Quest API Running 🚀");
 });
 
-const PORT = process.env.PORT || 3000;
-
-const mongoose = require("mongoose");
-
-const playerSchema = new mongoose.Schema({
-    username: String,
-    totalScore: Number,
-    updatedAt: { type: Date, default: Date.now }
-});
-
-const Player = mongoose.model("Player", playerSchema);
-
-app.post("/api/sync", async (req, res) => {
-    const { username, totalScore } = req.body;
-
-    if (!username) return res.status(400).json({ error: "No username" });
-
-    await Player.findOneAndUpdate(
-        { username },
-        { totalScore, updatedAt: new Date() },
-        { upsert: true }
-    );
-
-    res.json({ message: "Synced successfully" });
-});
 // Player Schema
 const playerSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
@@ -74,6 +49,9 @@ app.post("/api/sync", async (req, res) => {
         res.status(500).json({ error: "Server error" });
     }
 });
+
+const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
