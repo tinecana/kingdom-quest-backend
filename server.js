@@ -64,6 +64,10 @@ app.get("/api/leaderboard", async (req, res) => {
         console.error(error);
         res.status(500).json({ error: "Server error" });
     }
+app.get("/api/test-questions-count", async (req,res)=>{
+  const count = await Question.countDocuments();
+  res.json({ totalQuestions: count });
+});
 });
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
