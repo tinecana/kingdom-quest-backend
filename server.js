@@ -55,7 +55,7 @@ const PORT = process.env.PORT || 3000;
 app.get("/api/leaderboard", async (req, res) => {
     try {
         const topPlayers = await Player.find()
-            .sort({ totalScore: -1 }) // highest score first
+            .sort({ totalScore: -1 })
             .limit(10);
 
         res.json(topPlayers);
@@ -64,10 +64,45 @@ app.get("/api/leaderboard", async (req, res) => {
         console.error(error);
         res.status(500).json({ error: "Server error" });
     }
-app.get("/api/test-questions-count", async (req,res)=>{
-  const count = await Question.countDocuments();
-  res.json({ totalQuestions: count });
 });
+
+// ===== QUESTIONS ROUTE =====
+const Question = require("./models/Question");
+
+app.get("/api/questions", async (req, res) => {
+    try {
+        const { book, stage } = req.query;
+
+        if (!book || !stage) {
+            return res.status(400).json({ error: "Book and stage required" });
+        }
+
+        const questions = await Question
+            .find({ book, stage: Number(stage) })
+            .limit(10);
+
+        res.json(questions);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+// ===== BOOKS ROUTE =====
+const Book = require("./models/Book");
+
+app.get("/api/books", async (req, res) => {
+    try {
+        const books = await Book.find({ isActive: true })
+                                .sort({ order: 1 });
+
+        res.json(books);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
+    }
 });
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
