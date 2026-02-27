@@ -92,12 +92,25 @@ app.get("/api/questions", async (req, res) => {
 // ===== BOOKS ROUTE =====
 const Book = require("./models/Book");
 
-app.get("/api/books", async (req, res) => {
+app.get("/api/questions", async (req, res) => {
     try {
-        const books = await Book.find({ isActive: true })
-                                .sort({ order: 1 });
+        const { book, stage, limit } = req.query;
 
-        res.json(books);
+        const questionLimit = parseInt(limit) || 10;
+
+        const questions = await Question.aggregate([
+            {
+                $match: {
+                    book: book,
+                    stage: parseInt(stage)
+                }
+            },
+            {
+                $sample: { size: questionLimit }
+            }
+        ]);
+
+        res.json(questions);
 
     } catch (error) {
         console.error(error);
