@@ -71,15 +71,21 @@ const Question = require("./models/Question");
 
 app.get("/api/questions", async (req, res) => {
     try {
-        const { book, stage } = req.query;
+        const { book, stage, limit } = req.query;
 
-        if (!book || !stage) {
-            return res.status(400).json({ error: "Book and stage required" });
-        }
+        const questionLimit = parseInt(limit) || 10;
 
-        const questions = await Question
-            .find({ book, stage: Number(stage) })
-            .limit(10);
+        const questions = await Question.aggregate([
+            {
+                $match: {
+                    book: book,
+                    stage: parseInt(stage)
+                }
+            },
+            {
+                $sample: { size: questionLimit }
+            }
+        ]);
 
         res.json(questions);
 
