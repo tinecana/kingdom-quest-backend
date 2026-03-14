@@ -70,29 +70,25 @@ app.get("/api/leaderboard", async (req, res) => {
 const Question = require("./models/Question");
 
 app.get("/api/questions", async (req, res) => {
-    try {
-        const { book, stage, limit } = req.query;
 
-        const questionLimit = parseInt(limit) || 10;
+  const { book, stage, limit } = req.query;
 
-        const questions = await Question.aggregate([
-            {
-                $match: {
-                    book: book,
-                    stage: parseInt(stage)
-                }
-            },
-            {
-                $sample: { size: questionLimit }
-            }
-        ]);
+  try {
 
-        res.json(questions);
+    const questions = await Question.find({
+      book: book,
+      stage: Number(stage)
+    }).limit(Number(limit));
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Server error" });
-    }
+    res.json(questions);
+
+  } catch (err) {
+
+    console.log(err);
+    res.status(500).json({ error: "Server error" });
+
+  }
+
 });
 
 // ===== BOOKS ROUTE =====
