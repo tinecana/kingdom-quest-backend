@@ -18,6 +18,10 @@ app.get("/", (req, res) => {
     res.send("Kingdom Quest API Running 🚀");
 });
 
+app.get("/api/score", (req, res) => {
+  res.json({ message: "Score route working" });
+});
+
 // Player Schema
 const playerSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },

@@ -378,7 +378,7 @@ const questions = {
   { "q": "What offering was never mixed with leaven?", "o": ["Peace", "Grain", "Wave", "Sin", "Atonement"], "a": 1 }
  ]
 },
- "Number": {
+ "Numbers": {
                "stage1": [
   { "q": "Who led the Israelites after Moses?", "o": ["Aaron", "Caleb", "Joshua", "Eleazar", "Phinehas"], "a": 2 },
   { "q": "What was the census taken in the book of Numbers counting?", "o": ["Men under 20", "Men over 50", "Women", "Levites", "Children"], "a": 0 },
