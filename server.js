@@ -41,10 +41,10 @@ app.post("/api/sync", async (req, res) => {
         }
 
         await Player.findOneAndUpdate(
-            { username },
-            { totalScore, updatedAt: new Date() },
-            { upsert: true, new: true }
-        );
+  { username },
+  { totalScore },
+  { returnDocument: "after", upsert: true }
+);
 
         res.json({ message: "Synced successfully ✅" });
 
